@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更年期診断＆相談室 | らくこ_更年期ナースのお悩み相談室</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #fffaf8;
+            color: #444;
+        }
+        .main-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(246, 173, 85, 0.05);
+            border: 1px solid #f9ecea;
+            overflow: hidden;
+        }
+        .step-view {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .step-view.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .option-btn {
+            transition: all 0.2s;
+            border: 2px solid #fef3f2;
+        }
+        .option-btn.selected {
+            border-color: #fb923c;
+            background-color: #fff7ed;
+            color: #ea580c;
+        }
+        .nav-active {
+            background-color: #fb923c;
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4">
+
+    <div class="main-container">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="inline-block bg-orange-100 text-orange-600 text-[10px] font-bold px-4 py-1.5 rounded-full mb-3 tracking-[0.2em] uppercase">Note Special Gift</div>
+            <h1 class="text-2xl font-black text-gray-800">更年期スコア診断 ＆ 相談室</h1>
+            <p class="text-gray-400 text-xs mt-1">らくこ_更年期ナースのお悩み相談室</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex justify-center gap-2 mb-8 bg-white p-1 rounded-2xl shadow-sm border border-orange-50 w-max mx-auto">
+            <button onclick="switchMode('check')" id="tab-check" class="px-8 py-2.5 rounded-xl font-bold text-sm transition-all nav-active">診断する</button>
+            <button onclick="switchMode('ai')" id="tab-ai" class="px-8 py-2.5 rounded-xl font-bold text-sm transition-all text-gray-400">相談する</button>
+        </nav>
+
+        <!-- Mode: SMI Check -->
+        <div id="mode-check" class="card p-6 md:p-10">
+            
+            <!-- Start -->
+            <div id="view-start" class="step-view active text-center">
+                <div class="text-6xl mb-6">👩‍⚕️</div>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">こんにちは。らくこです</h2>
+                <p class="text-sm text-gray-500 leading-relaxed mb-10">
+                    今のあなたの状態を「SMI（小山内式）」という医療指標でチェックします。<br>
+                    10個の質問に直感でお答えくださいね。
+                </p>
+                <button onclick="startInterview()" class="w-full bg-orange-400 text-white font-bold py-5 rounded-2xl shadow-lg shadow-orange-100 active:scale-95 transition-all text-lg">
+                    診断をはじめる
+                </button>
+                <p class="mt-8 text-[10px] text-gray-300 italic">※簡略更年期指数(SMI)に基づいた本格的な判定です</p>
+            </div>
+
+            <!-- Interview Steps -->
+            <div id="view-interview" class="step-view">
+                <div class="flex justify-between items-center mb-6">
+                    <span id="progress-text" class="text-[10px] font-bold text-orange-400 tracking-tighter uppercase">Step 01 / 10</span>
+                    <span class="text-[9px] text-gray-300">指標：SMI（小山内式）</span>
+                </div>
+                <div class="w-full bg-orange-100 h-1 rounded-full mb-8 overflow-hidden">
+                    <div id="progress-bar" class="bg-orange-400 h-full w-0 transition-all duration-500"></div>
+                </div>
+
+                <h3 id="question-label" class="text-lg font-bold text-gray-800 mb-8 leading-snug min-h-[3rem]">質問内容</h3>
+
+                <div class="space-y-3 mb-8">
+                    <button onclick="selectScore(0)" id="opt-0" class="option-btn w-full flex items-center p-5 bg-white rounded-2xl text-left">
+                        <span class="w-8 h-8 flex items-center justify-center bg-orange-50 text-orange-400 rounded-lg font-bold mr-4">1</span>
+                        <span class="font-bold text-gray-600">強く感じる</span>
+                    </button>
+                    <button onclick="selectScore(1)" id="opt-1" class="option-btn w-full flex items-center p-5 bg-white rounded-2xl text-left">
+                        <span class="w-8 h-8 flex items-center justify-center bg-orange-50 text-orange-400 rounded-lg font-bold mr-4">2</span>
+                        <span class="font-bold text-gray-600">中くらいに感じる</span>
+                    </button>
+                    <button onclick="selectScore(2)" id="opt-2" class="option-btn w-full flex items-center p-5 bg-white rounded-2xl text-left">
+                        <span class="w-8 h-8 flex items-center justify-center bg-orange-50 text-orange-400 rounded-lg font-bold mr-4">3</span>
+                        <span class="font-bold text-gray-600">弱く感じる</span>
+                    </button>
+                    <button onclick="selectScore(3)" id="opt-3" class="option-btn w-full flex items-center p-5 bg-white rounded-2xl text-left">
+                        <span class="w-8 h-8 flex items-center justify-center bg-orange-50 text-orange-400 rounded-lg font-bold mr-4">4</span>
+                        <span class="font-bold text-gray-600">全く感じない</span>
+                    </button>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="prevQuestion()" class="flex-1 bg-gray-50 text-gray-400 font-bold py-4 rounded-2xl text-sm border border-gray-100">戻る</button>
+                    <button id="next-btn" onclick="nextQuestion()" class="flex-[2] bg-orange-400 text-white font-bold py-4 rounded-2xl text-sm shadow-md disabled:opacity-30" disabled>次へ進む</button>
+                </div>
+            </div>
+
+            <!-- Result -->
+            <div id="view-result" class="step-view text-center">
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-widest uppercase">My SMI Score Result</p>
+                <div class="text-6xl font-black text-orange-500 mb-2 tabular-nums"><span id="res-score">0</span><span class="text-xl ml-1">点</span></div>
+                <div id="res-tag" class="inline-block px-5 py-1.5 rounded-full text-[10px] font-bold mb-8"></div>
+                
+                <div class="text-left bg-orange-50/50 p-6 md:p-8 rounded-[2rem] border border-orange-50 mb-10">
+                    <p class="text-[10px] font-bold text-orange-400 mb-2 uppercase tracking-widest">Nurse Advice</p>
+                    <p id="res-advice" class="text-sm text-gray-600 leading-relaxed mb-6"></p>
+                    <div class="text-[10px] text-gray-300 pt-4 border-t border-orange-100">
+                        判定指標：簡略更年期指数 (SMI / 小山内式判定)
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <button onclick="copyResult()" class="w-full bg-gray-800 text-white font-bold py-4 rounded-2xl shadow-xl flex justify-center items-center gap-2 active:scale-95 transition-all">
+                        <span>📋 結果をコピーして保存</span>
+                    </button>
+                    <button onclick="location.reload()" class="text-gray-400 text-xs font-bold py-4">もう一度診断する</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mode: AI Consultation -->
+        <div id="mode-ai" class="hidden card p-6 md:p-10">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-3xl">👩‍⚕️</span>
+                <h2 class="text-xl font-bold text-gray-800">らくこナース相談室</h2>
+            </div>
+            
+            <p class="text-sm text-gray-500 leading-relaxed mb-8">
+                「最近イライラが止まらない」「夜中に目が覚めてしまう」など、今のお悩みをお聞かせください。AIナースがあなたに寄り添ってお答えします。
+            </p>
+
+            <div class="relative mb-6">
+                <textarea id="ai-input" rows="6" class="w-full p-6 rounded-[2rem] bg-gray-50 border border-gray-100 focus:outline-none focus:ring-4 focus:ring-orange-50 focus:border-orange-200 transition-all text-sm leading-relaxed" placeholder="例：最近、急に顔が熱くなって汗が止まらなくなります。夜も眠りが浅くて、昼間ずっとだるいです..."></textarea>
+                <button id="ai-btn" onclick="askAI()" class="mt-4 w-full bg-orange-400 text-white font-bold py-5 rounded-2xl shadow-lg shadow-orange-100 flex justify-center items-center gap-3 active:scale-[0.98] transition-all">
+                    <span>相談を送信する</span>
+                    <div id="ai-loader" class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </button>
+            </div>
+
+            <!-- AI Response Area -->
+            <div id="ai-res-box" class="hidden p-6 rounded-[2rem] bg-orange-50 border border-orange-100 relative">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="text-2xl">👩‍⚕️</span>
+                    <span class="font-bold text-orange-600 text-sm">らくこナースの回答</span>
+                </div>
+                <div id="ai-res-text" class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap"></div>
+                <button onclick="copyToClipboard('ai-res-text')" class="mt-4 text-[10px] font-bold text-gray-400 hover:text-orange-500 underline">回答をコピーする</button>
+            </div>
+        </div>
+
+        <footer class="mt-12 text-center">
+            <p class="text-[10px] text-gray-300">© 2024 らくこ_更年期ナースのお悩み相談室</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-sm text-white text-[11px] px-8 py-3 rounded-full opacity-0 transition-all pointer-events-none z-50">
+        コピーしました！
+    </div>
+
+    <script>
+        const apiKey = ""; // Gemini API key handled by environment
+        let currentIdx = 0;
+        let userScores = new Array(10).fill(null);
+
+        const questions = [
+            { text: "顔がほてる（のぼせ）ことがありますか？", weights: [10, 6, 3, 0] },
+            { text: "汗をかきやすいですか？", weights: [10, 6, 3, 0] },
+            { text: "腰や手足が冷えやすいですか？", weights: [14, 9, 5, 0] },
+            { text: "息切れ、どうきがすることがありますか？", weights: [12, 8, 4, 0] },
+            { text: "寝つきが悪い、または眠りが浅いですか？", weights: [14, 9, 5, 0] },
+            { text: "怒りやすく、すぐイライラしますか？", weights: [12, 8, 4, 0] },
+            { text: "くよくよしたり、憂うつになることがありますか？", weights: [7, 5, 3, 0] },
+            { text: "頭痛、めまい、吐き気がすることがありますか？", weights: [7, 5, 3, 0] },
+            { text: "疲れやすくなったと感じますか？", weights: [7, 5, 3, 0] },
+            { text: "肩こり、腰痛、手足の痛みがありますか？", weights: [7, 5, 3, 0] }
+        ];
+
+        function switchMode(mode) {
+            document.getElementById('mode-check').classList.toggle('hidden', mode !== 'check');
+            document.getElementById('mode-ai').classList.toggle('hidden', mode !== 'ai');
+            document.getElementById('tab-check').classList.toggle('nav-active', mode === 'check');
+            document.getElementById('tab-check').classList.toggle('text-gray-400', mode !== 'check');
+            document.getElementById('tab-ai').classList.toggle('nav-active', mode === 'ai');
+            document.getElementById('tab-ai').classList.toggle('text-gray-400', mode !== 'ai');
+        }
+
+        function startInterview() {
+            document.getElementById('view-start').classList.remove('active');
+            document.getElementById('view-interview').classList.add('active');
+            renderQ();
+        }
+
+        function renderQ() {
+            const q = questions[currentIdx];
+            document.getElementById('question-label').innerText = q.text;
+            document.getElementById('progress-text').innerText = `Step ${String(currentIdx + 1).padStart(2, '0')} / 10`;
+            document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / questions.length) * 100}%`;
+            
+            document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                btn.classList.toggle('selected', userScores[currentIdx] === q.weights[i]);
+            });
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = userScores[currentIdx] === null;
+            nextBtn.innerText = currentIdx === 9 ? "結果を判定する" : "次へ進む";
+        }
+
+        function selectScore(idx) {
+            userScores[currentIdx] = questions[currentIdx].weights[idx];
+            renderQ();
+        }
+
+        function nextQuestion() {
+            if (currentIdx < 9) {
+                currentIdx++;
+                renderQ();
+            } else {
+                showResult();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                renderQ();
+            } else {
+                location.reload();
+            }
+        }
+
+        function showResult() {
+            const total = userScores.reduce((a, b) => a + b, 0);
+            document.getElementById('view-interview').classList.remove('active');
+            document.getElementById('view-result').classList.add('active');
+            document.getElementById('res-score').innerText = total;
+            
+            const badge = document.getElementById('res-tag');
+            const advice = document.getElementById('res-advice');
+
+            if (total <= 25) {
+                badge.innerText = "良好"; badge.className = "inline-block px-5 py-1.5 rounded-full text-[10px] font-bold mb-8 bg-green-50 text-green-600 border border-green-100";
+                advice.innerText = "更年期症状は落ち着いていますね。今の健康的なリズムを大切に、自分をたっぷり労わりながら過ごしましょう。";
+            } else if (total <= 50) {
+                badge.innerText = "軽度"; badge.className = "inline-block px-5 py-1.5 rounded-full text-[10px] font-bold mb-8 bg-yellow-50 text-yellow-600 border border-yellow-100";
+                advice.innerText = "少し症状が出始めているようです。食事、睡眠、軽い運動など、生活リズムを整えることで改善が期待できますよ。";
+            } else if (total <= 65) {
+                badge.innerText = "中等度"; badge.className = "inline-block px-5 py-1.5 rounded-full text-[10px] font-bold mb-8 bg-orange-50 text-orange-600 border border-orange-100";
+                advice.innerText = "生活に支障が出始めていませんか？無理をせず、婦人科などの専門外来で医師に相談してみることをお勧めします。";
+            } else {
+                badge.innerText = "重度"; badge.className = "inline-block px-5 py-1.5 rounded-full text-[10px] font-bold mb-8 bg-red-50 text-red-600 border border-red-100";
+                advice.innerText = "症状がかなり辛い状態とお見受けします。一人で我慢せず、早めに適切な治療（HRTや漢方など）を医師と一緒に考えましょう。";
+            }
+        }
+
+        async function askAI() {
+            const prompt = document.getElementById('ai-input').value.trim();
+            if(!prompt) return;
+
+            const btn = document.getElementById('ai-btn');
+            const loader = document.getElementById('ai-loader');
+            const resBox = document.getElementById('ai-res-box');
+            const resText = document.getElementById('ai-res-text');
+
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+
+            const sys = "あなたは「更年期ナース らくこ」です。更年期に悩む女性をサポートする専門ナースとして、温かく寄り添いながらセルフケア（ツボ、食事など）を一つ提案してください。250文字程度。最後は受診を勧めて。";
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: sys }] } })
+                });
+                const d = await res.json();
+                resText.innerText = d.candidates[0].content.parts[0].text;
+                resBox.classList.remove('hidden');
+                resBox.scrollIntoView({ behavior: 'smooth' });
+            } catch (e) {
+                resText.innerText = "エラーが発生しました。時間を置いて再度お試しください。";
+                resBox.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                loader.classList.add('hidden');
+            }
+        }
+
+        function copyResult() {
+            const score = document.getElementById('res-score').innerText;
+            const status = document.getElementById('res-tag').innerText;
+            const advice = document.getElementById('res-advice').innerText;
+            const text = `【更年期らくらく診断 結果】\nSMIスコア：${score}点（${status}）\n指標：簡略更年期指数（小山内式）\n\nらくこナースより：\n${advice}\n\n#更年期ナースらくこ #更年期診断`;
+            copyText(text);
+        }
+
+        function copyToClipboard(id) {
+            const text = document.getElementById(id).innerText;
+            copyText(`【らくこナースの回答】\n\n${text}`);
+        }
+
+        function copyText(t) {
+            const el = document.createElement('textarea');
+            el.value = t;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            const toast = document.getElementById('toast');
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 2000);
+        }
+    </script>
+</body>
+</html>
